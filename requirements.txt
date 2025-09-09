@@ -1,0 +1,9 @@
+langchain
+langchain-community
+openai
+faiss-cpu
+pypdf
+pdfplumber
+gradio
+python-dotenv
+gradio
