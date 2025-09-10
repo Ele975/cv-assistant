@@ -7,12 +7,14 @@ from langsmith import Client
 
 from langchain_openai import ChatOpenAI
 from langchain_openai import OpenAIEmbeddings
+from langchain_tavily import TavilySearch
 
 # load environment variables from .env file
 try:
     load_dotenv()
-except ImportError:
-    pass
+except Exception as e:
+    print('Failed import from .env file.')
+    sys.exit(1)
 
 # set up langsmith
 
@@ -50,3 +52,15 @@ def get_retriever():
         model = model
     )
     return embeddings
+
+def get_search_engine():
+    if not os.environ.get['TAVILY_API_KEY']:
+        print('Missing Tavily key.')
+        sys.exit(1)
+
+    tool = TavilySearch(
+        max_results = 5,
+        topic = 'general'
+    )
+    return tool
+    
