@@ -48,19 +48,19 @@ def get_llm():
     
 def get_retriever():
     model="text-embedding-3-large"
-    embeddings = OpenAIEmbeddings(
+    embedding_model = OpenAIEmbeddings(
         model = model
     )
-    return embeddings
+    return embedding_model
 
 def get_search_engine():
     if not os.environ.get['TAVILY_API_KEY']:
         print('Missing Tavily key.')
         sys.exit(1)
 
-    tool = TavilySearch(
+    search_engine = TavilySearch(
         max_results = 5,
         topic = 'general'
     )
-    return tool
+    return search_engine
     
