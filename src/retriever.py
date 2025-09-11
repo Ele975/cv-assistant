@@ -20,7 +20,10 @@ def splitting(docs):
     chunks = text_splitter.split_documents(docs)
     return chunks
 
+
 def get_vector_store():
+    # this entire implementation can be replaced with 'vector_store = FAISS.from_documents(chunks, embeddings)'
+    # not here because we need the vector store without for now passing any doc
     embedding_model = get_retriever()
     # get dimension of sample query
     dim = len(embedding_model.embed_query('Hello world.'))
@@ -35,8 +38,21 @@ def get_vector_store():
 
     return vector_store
 
+def document_indexing(filepath):
+    docs = get_documents(filepath)
+    chunks = splitting(docs)
+    return chunks
 
-def store_embeddings(vector_store, chunks):
+
+def store_embeddings(filepath):
+    chunks = document_indexing(filepath)
+    vector_store = get_vector_store()
     uuids = [str(uuid4()) for _ in range(len(chunks))]
     vector_store.add_documents(documents=chunks, ids = uuids)
+
+
+def get_retriever():
+    vector_store = get_vector_store()
+    retriever = vector_store.as_retriever()
+    return retriever
     
