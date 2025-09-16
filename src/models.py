@@ -34,6 +34,15 @@ def get_langsmith():
     print(f"LangSmith activated with project name {project_name}.")
 
 
+def get_llm_summarization():
+    if not os.environ.get("OPENAI_API_KEY"):
+        print("Missing OpenAI key.")
+        sys.exit(1)
+    # smaller model for summarization for long-term memory
+    model = "gpt-3.5-turbo"
+    llm = ChatOpenAI(model=model, temperature=0, max_tokens=None)
+    return llm   
+    
 def get_llm():
     if not os.environ.get("OPENAI_API_KEY"):
         print("Missing OpenAI key.")

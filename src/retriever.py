@@ -1,11 +1,14 @@
-from langchain_community.document_loaders import PyPDFLoader
-from langchain_text_splitters import RecursiveCharacterTextSplitter
 import faiss
-from langchain_community.docstore.in_memory import InMemoryDocstore
-from langchain_community.vectorstores import FAISS
 from uuid import uuid4
 
 from models import get_retriever
+
+from langchain_community.document_loaders import PyPDFLoader
+from langchain_community.docstore.in_memory import InMemoryDocstore
+from langchain_community.vectorstores import FAISS
+
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+
 
 def get_documents(filepath):
     loader = PyPDFLoader(filepath)
@@ -21,7 +24,7 @@ def splitting(docs):
     return chunks
 
 
-def get_vector_store():
+def get_empty_vector_store():
     # this entire implementation can be replaced with 'vector_store = FAISS.from_documents(chunks, embeddings)'
     # not here because we need the vector store without for now passing any doc
     embedding_model = get_retriever()
@@ -38,21 +41,18 @@ def get_vector_store():
 
     return vector_store
 
-def document_indexing(filepath):
+
+def build_vector_store_from_file(filepath):
     docs = get_documents(filepath)
     chunks = splitting(docs)
-    return chunks
-
-
-def store_embeddings(filepath):
-    chunks = document_indexing(filepath)
-    vector_store = get_vector_store()
+    vector_store = get_empty_vector_store()
     uuids = [str(uuid4()) for _ in range(len(chunks))]
     vector_store.add_documents(documents=chunks, ids = uuids)
 
+    return vector_store
 
-def get_retriever():
-    vector_store = get_vector_store()
-    retriever = vector_store.as_retriever()
-    return retriever
+
+def build_retriever_from_cv(filepath):
+    vector_store = build_vector_store_from_file(filepath)
+    return vector_store.as_retriever()
     
