@@ -4,7 +4,7 @@ from models import get_search_engine
 
 def make_tool_retriever(retriever):
     retriever_tool = Tool(
-        name = "CVRetriever"
+        name = "CVRetriever",
         func = lambda q: "\n\n".join([d.page_content for d in retriever.get_relevant_documents(q)]),
         description = "Use this tool to answer questions from the uploaded document."
     )

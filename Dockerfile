@@ -23,4 +23,4 @@ COPY . .
 EXPOSE 7860
 
 # 7. Run app
-# CMD ["python", "src/app.py"]
+CMD ["python", "src/app.py"]
