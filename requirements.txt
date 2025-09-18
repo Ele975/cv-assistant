@@ -8,3 +8,4 @@ pdfplumber
 gradio
 python-dotenv
 gradio
+transformers

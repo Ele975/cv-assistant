@@ -5,9 +5,12 @@ from dotenv import load_dotenv
 
 from langsmith import Client
 
-from langchain_openai import ChatOpenAI
-from langchain_openai import OpenAIEmbeddings
+from transformers import AutoModelForCausalLM, AutoTokenizer
+from langchain.llms import HuggingFacePipeline
+import torch
+from transformers import pipeline
 from langchain_community.tools.tavily_search import TavilySearchResults
+from langchain_community.embeddings import HuggingFaceEmbeddings
 
 # load environment variables from .env file
 try:
@@ -22,7 +25,7 @@ except Exception as e:
 
 
 def get_langsmith():
-    if not os.environ["LANGSMITH_API_KEY"]:
+    if not os.environ.get("LANGSMITH_API_KEY"):
         print("Missing LangSmith key.")
         sys.exit(1)
     os.environ["LANGCHAIN_TRACING_V2"] = "true"
@@ -35,33 +38,63 @@ def get_langsmith():
 
 
 def get_llm_summarization():
-    if not os.environ.get("OPENAI_API_KEY"):
-        print("Missing OpenAI key.")
-        sys.exit(1)
-    # smaller model for summarization for long-term memory
-    model = "gpt-3.5-turbo"
-    llm = ChatOpenAI(model=model, temperature=0, max_tokens=None)
-    return llm   
+    model_id = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
+    tokenizer = AutoTokenizer.from_pretrained(model_id)
+
+    model = AutoModelForCausalLM.from_pretrained(
+        model_id,
+        device_map="auto",          # M1 acceleration
+        torch_dtype=torch.float16   # efficient on Apple silicon
+    )  
+
+    summarizer = pipeline(
+    "text-generation",
+    model=model,
+    tokenizer=tokenizer,
+    max_new_tokens=256,
+    temperature=0.0,
+    do_sample=False
+    )
+
+    return HuggingFacePipeline(pipeline=summarizer)
     
 def get_llm():
-    if not os.environ.get("OPENAI_API_KEY"):
-        print("Missing OpenAI key.")
-        sys.exit(1)
+    token = os.environ.get("HUGGINGFACEHUB_API_TOKEN")
+    if not token:
+        raise ValueError("Missing Hugging Face token. Set HUGGINGFACEHUB_API_TOKEN.")
+    
+    model_id = "mistralai/Mistral-7B-Instruct-v0.2"
+    tokenizer = AutoTokenizer.from_pretrained(model_id, use_auth_token=token)
+    model = AutoModelForCausalLM.from_pretrained(
+        model_id,
+        device_map="auto",
+        torch_dtype=torch.float16,
+        use_auth_token=token
+    )
 
-    # large model for main agent for reasoning
-    model = "gpt-4o"
-    llm = ChatOpenAI(model=model, temperature=0.5, max_tokens=None)
-    return llm
+    generator = pipeline(
+        "text-generation",
+        model=model,
+        tokenizer=tokenizer,
+        max_new_tokens=512,
+        temperature=0.5
+    )
+
+    return HuggingFacePipeline(pipeline=generator)
 
 
 def get_retriever():
-    model = "text-embedding-3-large"
-    embedding_model = OpenAIEmbeddings(model=model)
+    model_name = "sentence-transformers/all-MiniLM-L6-v2"
+
+    embedding_model = HuggingFaceEmbeddings(
+        model_name=model_name
+    )
+
     return embedding_model
 
 
 def get_search_engine():
-    if not os.environ.get["TAVILY_API_KEY"]:
+    if not os.environ.get("TAVILY_API_KEY"):
         print("Missing Tavily key.")
         sys.exit(1)
 
