@@ -22,8 +22,6 @@ RUN pip install sentence-transformers
 # 5. Copy project files
 COPY . /app 
 
-ENV TRANSFORMERS_CACHE=models_downloaded
-
 # 6. Expose Gradio default port
 EXPOSE 7860
 

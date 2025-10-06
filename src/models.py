@@ -38,13 +38,13 @@ def get_langsmith():
 
 
 def get_llm_summarization():
-    model_id = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
-    tokenizer = AutoTokenizer.from_pretrained(model_id)
+    # model_id = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
+    model_path = "models_downloaded/hub/models--TinyLlama--TinyLlama-1.1B-Chat-v1.0/snapshots/fe8a4ea1ffedaf415f4da2f062534de366a451e6"
+    tokenizer = AutoTokenizer.from_pretrained(model_path)
 
     model = AutoModelForCausalLM.from_pretrained(
-        model_id,
+        model_path,
         device_map="auto", 
-        cache_dir="../models_downloaded/",        
         torch_dtype=torch.float16  
     )  
 
@@ -64,14 +64,13 @@ def get_llm():
     if not token:
         raise ValueError("Missing Hugging Face token. Set HUGGINGFACEHUB_API_TOKEN.")
     
-    model_id = "mistralai/Mistral-7B-Instruct-v0.2"
-    tokenizer = AutoTokenizer.from_pretrained(model_id, use_auth_token=token)
+    model_path = "models_downloaded/hub/models--mistralai--Mistral-7B-Instruct-v0.2/snapshots/63a8b081895390a26e140280378bc85ec8bce07a"
+    # model_id = "mistralai/Mistral-7B-Instruct-v0.2"
+    tokenizer = AutoTokenizer.from_pretrained(model_path)
     model = AutoModelForCausalLM.from_pretrained(
-        model_id,
+        model_path,
         device_map="auto",
-        cache_dir="../models_downloaded/",
-        torch_dtype=torch.float16,
-        use_auth_token=token
+        torch_dtype=torch.float16
     )
 
     generator = pipeline(
@@ -86,10 +85,10 @@ def get_llm():
 
 
 def get_retriever():
-    model_name = "sentence-transformers/all-MiniLM-L6-v2"
-
+    # model_name = "sentence-transformers/all-MiniLM-L6-v2"
+    model_path = "models_downloaded/hub/models--sentence-transformers--all-MiniLM-L6-v2/snapshots/c9745ed1d9f207416be6d2e6f8de32d1f16199bf"
     embedding_model = HuggingFaceEmbeddings(
-        model_name=model_name,
+        model_name = model_path
     )
 
     return embedding_model
