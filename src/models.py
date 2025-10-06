@@ -43,8 +43,9 @@ def get_llm_summarization():
 
     model = AutoModelForCausalLM.from_pretrained(
         model_id,
-        device_map="auto",          # M1 acceleration
-        torch_dtype=torch.float16   # efficient on Apple silicon
+        device_map="auto", 
+        cache_dir="../models_downloaded/",        
+        torch_dtype=torch.float16  
     )  
 
     summarizer = pipeline(
@@ -68,6 +69,7 @@ def get_llm():
     model = AutoModelForCausalLM.from_pretrained(
         model_id,
         device_map="auto",
+        cache_dir="../models_downloaded/",
         torch_dtype=torch.float16,
         use_auth_token=token
     )
@@ -87,7 +89,7 @@ def get_retriever():
     model_name = "sentence-transformers/all-MiniLM-L6-v2"
 
     embedding_model = HuggingFaceEmbeddings(
-        model_name=model_name
+        model_name=model_name,
     )
 
     return embedding_model

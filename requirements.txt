@@ -9,3 +9,4 @@ gradio
 python-dotenv
 gradio
 transformers
+torch
