@@ -12,15 +12,15 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 
-# 4. Install python dependencies
-COPY requirements.txt .
+# 4. Copy project files
+COPY . /app 
+
+# 5. Install python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cpu
 RUN pip install transformers accelerate
 RUN pip install sentence-transformers
 
-# 5. Copy project files
-COPY . /app 
 
 # 6. Expose Gradio default port
 EXPOSE 7860

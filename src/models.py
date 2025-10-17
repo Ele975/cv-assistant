@@ -6,10 +6,10 @@ from dotenv import load_dotenv
 from langsmith import Client
 
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from langchain.llms import HuggingFacePipeline
+from langchain_huggingface import HuggingFaceEmbeddings, HuggingFacePipeline
 import torch
 from transformers import pipeline
-from langchain_community.tools.tavily_search import TavilySearchResults
+from langchain_tavily import TavilySearch
 from langchain_community.embeddings import HuggingFaceEmbeddings
 
 # load environment variables from .env file
@@ -45,7 +45,7 @@ def get_llm_summarization():
     model = AutoModelForCausalLM.from_pretrained(
         model_path,
         device_map="auto", 
-        torch_dtype=torch.float16  
+        dtype=torch.float16  
     )  
 
     summarizer = pipeline(
@@ -70,7 +70,7 @@ def get_llm():
     model = AutoModelForCausalLM.from_pretrained(
         model_path,
         device_map="auto",
-        torch_dtype=torch.float16
+        dtype=torch.float16
     )
 
     generator = pipeline(
@@ -99,5 +99,5 @@ def get_search_engine():
         print("Missing Tavily key.")
         sys.exit(1)
 
-    search_engine = TavilySearchResults(max_results=5, topic="general")
+    search_engine = TavilySearch(max_results=5, topic="general")
     return search_engine

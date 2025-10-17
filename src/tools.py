@@ -1,5 +1,4 @@
 from langchain.tools import Tool
-from retriever import get_retriever
 from models import get_search_engine
 
 def make_tool_retriever(retriever):

@@ -1,6 +1,8 @@
 langchain
 langchain_openai
 langchain-community
+langchain-huggingface
+langchain-tavily
 openai
 faiss-cpu
 pypdf
