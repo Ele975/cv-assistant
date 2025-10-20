@@ -1,0 +1,25 @@
+[project]
+name = "cv-assistant"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "faiss-cpu>=1.12.0",
+    "gradio>=5.49.1",
+    "langchain==0.3.27",
+    "langchain-community==0.3.31",
+    "langchain-huggingface==0.3.1",
+    "langchain-openai==0.3.35",
+    "langchain-tavily>=0.2.12",
+    "openai==2.3.0",
+    "pdfplumber>=0.11.7",
+    "pypdf>=6.1.2",
+    "python-dotenv>=1.1.1",
+    "transformers>=4.57.1",
+    "ipykernel>=7.0.1",
+    "torch>=2.9.0",
+    "sentence-transformers>=5.1.1",
+    "accelerate>=1.10.1",
+]
+

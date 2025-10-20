@@ -2,6 +2,8 @@ __pycache__/
 *.pyc
 .env
 .git
+.venv
+models_downloaded/hub/models--mistralai--Mistral-7B-Instruct-v0.2/
 .vscode/
 .idea/
 data/
