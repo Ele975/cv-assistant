@@ -1,0 +1,1 @@
+OpenAI-powered AI agent capable of parsing and analyzing CVs in PDF format, providing targeted improvement suggestions by leveraging integrated tools such as a retriever module and a semantic search engine.
