@@ -16,38 +16,32 @@ from langchain_core.chat_history import InMemoryChatMessageHistory
 
 session_histories = {}
 
-def get_hybrid_memory():
-    llm = get_llm_summarization()
+# def get_hybrid_memory():
+#     llm = get_llm_summarization()
 
-    # window_memory = ConversationBufferWindowMemory(
-    #     k=5,
-    #     memory_key="window_history",
-    #     input_key = "input_window",
-    #     return_messages=True
-    # )
+#     # window_memory = ConversationBufferWindowMemory(
+#     #     k=5,
+#     #     memory_key="window_history",
+#     #     input_key = "input_window",
+#     #     return_messages=True
+#     # )
 
-    summary_memory = ConversationSummaryMemory(
-        llm=llm,
-        # input_key = "input_summary",
-        # memory_key="summary_history",
-        return_messages=True
-    )
+#     summary_memory = ConversationSummaryMemory(
+#         llm=llm,
+#         # input_key = "input_summary",
+#         # memory_key="summary_history",
+#         return_messages=True
+#     )
 
-    buffer_memory = ConversationBufferMemory(return_messages=True)
-    buffer_memory.chat_memory.messages = []  # Optional init
-    buffer_memory.summary_memory = summary_memory  # Store it for later use if needed
-    return buffer_memory
+#     buffer_memory = ConversationBufferMemory(return_messages=True)
+#     buffer_memory.chat_memory.messages = []  # Optional init
+#     buffer_memory.summary_memory = summary_memory  # Store it for later use if needed
+#     return buffer_memory
 
     # return CombinedMemory(memories=[window_memory, summary_memory])
 
 
 def get_session_memory(session_id: str):
-    # combined_memory = get_hybrid_memory()
-    # buffer_memory = ConversationBufferMemory(return_messages = True)
-    # buffer_memory.chat_memory.messages = []
-    # buffer_memory.combined_memory = combined_memory
-    # return buffer_memory
-    # return get_hybrid_memory()
     if session_id not in session_histories:
         session_histories[session_id] = InMemoryChatMessageHistory()
     return session_histories[session_id]
@@ -67,12 +61,12 @@ def setup_agent(cv_file):
 
 def chat_with_agent(user_input, chat_history, session_id, agent_with_memory):
     chat_history.append({"role": "user", "content": user_input})
-    print(f"💬 Invoking agent with input: {user_input}", flush=True)
+    print(f"Invoking agent with input: {user_input}", flush=True)
     response = agent_with_memory.invoke(
         {"input": user_input},
         config={"configurable": {"session_id": session_id}}
     )
-    print("🧠 Raw response:", response, flush=True)
+    print("Raw response:", response, flush=True)
 
     chat_history.append({"role": "assistant", "content": response["output"]})
     return chat_history
@@ -94,10 +88,10 @@ with gr.Blocks() as demo:
     agent_state = gr.State(None)
 
     def init_agent(file):
-        print("⚙️ Setting up agent...", flush=True)
+        print("Setting up agent...", flush=True)
         agent_with_memory = setup_agent(file)
-        print("✅ Agent created:", type(agent_with_memory), flush=True)
-        return agent_with_memory, "✅ CV uploaded. You can now start chatting!"
+        print("Agent created:", type(agent_with_memory), flush=True)
+        return agent_with_memory, "CV uploaded. You can now start chatting!"
 
     cv_upload.upload(
         init_agent,
@@ -106,8 +100,8 @@ with gr.Blocks() as demo:
     )
 
     def respond(message, chat_history, agent_with_memory):
-        print("📩 Respond called:", message, flush=True)
-        print("🤖 Agent with memory is:", type(agent_with_memory), flush=True)
+        print("Respond called:", message, flush=True)
+        print("Agent with memory is:", type(agent_with_memory), flush=True)
         if agent_with_memory is None:
             chat_history.append({"role": "system", "content": "Please upload a CV first."})
             print('Chat history no agent:', chat_history)
